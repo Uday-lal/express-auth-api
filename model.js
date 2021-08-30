@@ -41,10 +41,8 @@ class Users {
     return data[0];
   }
 
-  update(user_id, updating_data) {
-    this.users.doc(user_id).get().then((docs) => {
-      docs.update(updating_data);
-    });
+  update(user_id, updated_data) {
+    this.users.doc(user_id).update(updated_data)
   }
 
   delete(user_id) {

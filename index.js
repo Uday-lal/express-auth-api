@@ -47,7 +47,10 @@ app.post("/login", (req, res) => {
 });
 
 app.put("/change_password", (req, res) => {
-  // ...
+  let user_id = req.body.user_id;
+  let updated_password = req.body.updated_password;
+  Users.update(user_id, {password: updated_password});
+  res.send({message: "Update successfull"})
 });
 
 app.listen(8080, () => console.log("Server listening on port 8080..."));
