@@ -9,7 +9,9 @@
   "author": "Uday lal",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
     "firebase-admin": "^9.11.1"
   }
 }
