@@ -21,7 +21,29 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  // ...
+  const email = req.body.email;
+  const password = req.body.password;
+  if (email && password) {
+  	Users.users
+  		.where("email", "==", email)
+  		.get()
+  		.then((snapshot) => {
+  			let user_data = snapshot.docs[0].data();
+  			if (user_data.password == password) {
+  				user_data.id = snapshot.docs[0].id;
+  				res.send(
+  					{
+  						message: "You'll able to login",
+  						user_data: user_data
+  					}
+  				);
+  			} else {
+  				res.send({message: "Password is incorrect"});
+  			}
+  		});
+  } else {
+  	res.send({message: "We don't have enough information to login a user"});
+  }
 });
 
 app.put("/change_password", (req, res) => {
