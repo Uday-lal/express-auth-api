@@ -21,24 +21,24 @@ class Users {
   }
 
   read(identifier) {
-    let data;
+    let data = [];
     if (identifier) {
       this.users
         .where(identifier.key, "==", identifier.value)
         .get()
         .then((snapshot) => {
-          data = snapshot.docs[0].data();
-          data.id = snapshot.docs[0].id;
+          let user_data = snapshot.docs[0].data();
+          user_data.id = snapshot.docs[0].id;
+          data.push(user_data);
         });
     } else {
-      data = [];
       this.users.get().then((snapshot) => {
         snapshot.docs.forEach((users) => {
           data.push(users.data());
         });
       });
     }
-    return data;
+    return data[0];
   }
 
   update(user_id, updating_data) {
@@ -55,4 +55,4 @@ class Users {
 }
 
 
-export default Users;
+module.exports = Users;
