@@ -6,3 +6,7 @@ FirebaseServiceAccountCred.json
 
 # test dir
 test
+
+# Production dir
+production
+

@@ -46,9 +46,8 @@ class Users {
   }
 
   delete(user_id) {
-    this.users.doc(user_id).get().then((docs) => {
-      docs.delete();
-    });
+    this.users.doc(user_id).delete();
+    return {message: "Users deleted"};
   }
 }
 

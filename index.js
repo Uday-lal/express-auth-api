@@ -1,5 +1,4 @@
 const express = require("express");
-const session = require("express-session");
 const cors = require("cors");
 const app = express();
 let Users = require("./model");
@@ -14,12 +13,29 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.urlencoded());
 app.use(express.json());
-app.use(session({
-	secret: "secret_key",
-	resave: false,
-	saveUnintialized: false
-}));
 
+
+
+app.get("/", (req, res) => {
+	let users = [];
+	Users.users.get().then((snapshot) => {
+		snapshot.docs.forEach((user) => {
+			let user_data = user.data();
+			user_data.id = user.id;
+			users.push(user_data);
+		});
+		res.send(users);
+	});
+});
+
+app.get("/:user_id", (req, res) => {
+	let user_data;
+	Users.users.doc(req.params.user_id).get().then((snapshot) => {
+		user_data = snapshot.data();
+		user_data.id = req.params.user_id;
+		res.send(user_data);
+	});
+});
 
 
 app.post("/register", (req, res) => {
@@ -51,10 +67,6 @@ app.post("/login", (req, res) => {
   						user_data: user_data
   					}
   				);
-  				req.session.username = user_data.username;
-  				req.session.email = user_data.email;
-  				req.session.user_id = user_data.id;
-  				req.session.save();
   			} else {
   				res.send({message: "Password is incorrect"});
   			}
@@ -65,13 +77,18 @@ app.post("/login", (req, res) => {
 });
 
 app.put("/change_password", (req, res) => {
-	let user_id = req.session.user_id;
+	let user_id = req.body.user_id;
 	if (user_id) {
 	  let updated_password = req.body.updated_password;
 	  Users.update(user_id, {password: updated_password});
 	} else {
 		res.send({message: "You're not loged in"});
 	}
+});
+
+app.delete("/delete/:user_id", (req, res) => {
+	let responce = Users.delete(req.params.user_id);
+	res.send(responce);
 });
 
 app.listen(8080, () => console.log("Server listening on port 8080..."));
