@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const app = express();
 let Users = require("./model");
 
@@ -30,11 +31,15 @@ app.get("/", (req, res) => {
 
 app.get("/:user_id", (req, res) => {
 	let user_data;
-	Users.users.doc(req.params.user_id).get().then((snapshot) => {
-		user_data = snapshot.data();
-		user_data.id = req.params.user_id;
-		res.send(user_data);
-	});
+	try {
+		Users.users.doc(req.params.user_id).get().then((snapshot) => {
+			user_data = snapshot.data();
+			user_data.id = req.params.user_id;
+			res.send(user_data);
+		});
+	} catch(err) {
+		res.send({message: "User id is invalid"});
+	}
 });
 
 
@@ -54,23 +59,27 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (email && password) {
-  	Users.users
-  		.where("email", "==", email)
-  		.get()
-  		.then((snapshot) => {
-  			let user_data = snapshot.docs[0].data();
-  			if (user_data.password == password) {
-  				user_data.id = snapshot.docs[0].id;
-  				res.status(200).send(
-  					{
-  						message: "You'll are login",
-  						user_data: user_data
-  					}
-  				);
-  			} else {
-  				res.send({message: "Password is incorrect"});
-  			}
-  		});
+  	try {
+	  	Users.users
+	  		.where("email", "==", email)
+	  		.get()
+	  		.then((snapshot) => {
+	  			let user_data = snapshot.docs[0].data();
+	  			if (user_data.password == password) {
+	  				user_data.id = snapshot.docs[0].id;
+	  				res.status(200).send(
+	  					{
+	  						message: "You'll are login",
+	  						user_data: user_data
+	  					}
+	  				);
+	  			} else {
+	  				res.send({message: "Password is incorrect"});
+	  			}
+	  		});
+  	} catch(err) {
+  		res.send({message: "Something went wrong"});
+  	}
   } else {
   	res.send({message: "We don't have enough information to login a user"});
   }
@@ -78,17 +87,27 @@ app.post("/login", (req, res) => {
 
 app.put("/change_password", (req, res) => {
 	let user_id = req.body.user_id;
-	if (user_id) {
-	  let updated_password = req.body.updated_password;
-	  Users.update(user_id, {password: updated_password});
+	try {
+		if (user_id) {
+		  let updated_password = req.body.updated_password;
+		  Users.update(user_id, {password: updated_password});
+		} else {
+			res.send({message: "You're not loged in"});
+		}
 	} else {
-		res.send({message: "You're not loged in"});
+		res.send({message: "User id is invalid"});
 	}
 });
 
 app.delete("/delete/:user_id", (req, res) => {
-	let responce = Users.delete(req.params.user_id);
-	res.send(responce);
+	try {
+		let responce = Users.delete(req.params.user_id);
+		res.send(responce);
+	} catch(err) {
+		res.send({message: "User id is invalid"});
+	}
 });
 
-app.listen(8080, () => console.log("Server listening on port 8080..."));
+
+const PORT = process.env.PORT || 8080
+app.listen(POST, () => console.log(`Server listening on port ${PORT}...`));
