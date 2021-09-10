@@ -15,7 +15,13 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded());
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/", function (req, res) {
+  /* 
+	Return the array of all users in the database
+   * @params {object} res: Responce for a paticular requests
+   * @params {object} req: Incoming get requests.
+   * return array
+  */
   let users = [];
   Users.users.get().then((snapshot) => {
     snapshot.docs.forEach((user) => {
@@ -27,7 +33,13 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/:user_id", (req, res) => {
+app.get("/:user_id", function (req, res) {
+  /* 
+	Return a user object
+   * @params {object} res: Responce for a paticular requests
+   * @params {object} req: Incoming get requests.
+   * return object
+  */
   let user_data;
   try {
     Users.users
@@ -43,7 +55,13 @@ app.get("/:user_id", (req, res) => {
   }
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", function (req, res) {
+  /* 
+	Regiter user account
+   * @params {object} res: Responce for a paticular requests
+   * @params {object} req: Incoming post requests.
+   * return object
+  */
   const username = req.body.username;
   const email = req.body.email;
   const password = req.body.password;
@@ -55,7 +73,13 @@ app.post("/register", (req, res) => {
   }
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", function (req, res) {
+  /* 
+	Login users to there account
+   * @params {object} res: Responce for a paticular requests
+   * @params {object} req: Incoming post requests.
+   * return object
+  */
   const email = req.body.email;
   const password = req.body.password;
   if (email && password) {
@@ -83,7 +107,13 @@ app.post("/login", (req, res) => {
   }
 });
 
-app.put("/change_password", (req, res) => {
+app.put("/change_password", function (req, res) {
+  /* 
+	Change the passwords of the user account
+   * @params {object} res: Responce for a paticular requests
+   * @params {object} req: Incoming put requests.
+   * return object
+  */
   let user_id = req.body.user_id;
   try {
     if (user_id) {
@@ -97,7 +127,13 @@ app.put("/change_password", (req, res) => {
   }
 });
 
-app.delete("/delete/:user_id", (req, res) => {
+app.delete("/delete/:user_id", function (req, res) {
+  /* 
+	 Delete the users of the system
+   * @params {object} res: Responce for a paticular requests
+   * @params {object} req: Incoming post requests.
+   * return object
+  */
   try {
     let responce = Users.delete(req.params.user_id);
     res.send(responce);
