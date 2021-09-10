@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const cors = require("cors");
 require("dotenv").config();
 const app = express();
@@ -11,6 +12,13 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
+app.use(
+  session({
+    secret: "abc",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 app.use(cors(corsOptions));
 app.use(express.urlencoded());
 app.use(express.json());
@@ -129,7 +137,7 @@ app.put("/change_password", function (req, res) {
 
 app.delete("/delete/:user_id", function (req, res) {
   /* 
-	 Delete the users of the system
+	Delete the users of the system
    * @params {object} res: Responce for a paticular requests
    * @params {object} req: Incoming post requests.
    * return object
