@@ -39,7 +39,7 @@ res = requests.post(url + "/login", data={
 })
 print(res.json())
 
-# Chnage password
+# Change password
 res = requests.put(url + "/chnage_password", data={
 	"user_id": "user_id",
 	"updated_password": "updated_password"
